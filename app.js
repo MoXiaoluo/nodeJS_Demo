@@ -51,6 +51,8 @@ app.use(function(req,res,next){
 });
 
 app.use('/login',function(req,res,next){
+  app.locals.title = "Myapp";
+  res.locals.title = "res_app"
   var url = req.url;
   // 判断不拦截的路由 出/login和/之外的都拦截
   // if (url == '/login') {
@@ -82,9 +84,26 @@ app.post('/login', function(req, res,next){
   next();
 });
 
+var admin = express();
+
+admin.on('mount', function (parent) {
+  console.log('Admin Mounted');
+  console.log(parent); // refers to the parent app
+});
+
+admin.get('/', function (req, res) {
+  res.send('Admin Homepage');
+});
+
+app.use('/admin', admin);
+
+
 
 //退出
 app.get('/logoff', function (req, res) {
+  console.log("app.locals.title"+app.locals.title);
+  console.log("res.locals.title"+res.locals.title);
+  console.log("app.mountpath"+app.mountpath)
   req.session.userName = null; // 删除session
   res.redirect('/');
 });
